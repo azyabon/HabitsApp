@@ -7,6 +7,7 @@ data class Habit(
     val name: String,
     val category: HabitCategory,
     val target: HabitTarget,
+    val schedule: HabitSchedule,
     val isActive: Boolean,
 )
 
@@ -60,3 +61,9 @@ data class HabitProgress(
             is HabitTarget.Amount -> "$currentValue / ${target.value} ${target.unit}"
         }
 }
+
+fun HabitSchedule.isDueOn(day: DayOfWeek): Boolean =
+    when (this) {
+        HabitSchedule.EveryDay -> true
+        is HabitSchedule.SpecificWeekDays -> day in days
+    }

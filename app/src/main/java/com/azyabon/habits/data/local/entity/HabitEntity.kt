@@ -11,5 +11,7 @@ data class HabitEntity(
     val targetType: String,
     val targetAmount: Int?,
     val targetUnit: String?,
+    val scheduleType: String,
+    val scheduleDays: String?,
     val isActive: Boolean,
 )

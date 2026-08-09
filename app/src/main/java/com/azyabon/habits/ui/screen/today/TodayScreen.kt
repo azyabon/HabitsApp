@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.azyabon.habits.core.designsystem.icon.Streak
-import com.azyabon.habits.domain.model.Habit
-import com.azyabon.habits.domain.model.HabitProgress
 import com.azyabon.habits.ui.component.HabitCard
 
 @Composable
@@ -36,15 +34,13 @@ fun TodayScreen(
 
     TodayContent(
         habits = uiState.habits,
-        habitsProgress = uiState.habitsProgress,
         onHabitClick = onHabitClick,
     )
 }
 
 @Composable
 fun TodayContent(
-    habits: List<Habit>,
-    habitsProgress: List<HabitProgress>,
+    habits: List<TodayHabitUi>,
     onHabitClick: (String) -> Unit,
 ) {
     LazyColumn(
@@ -85,18 +81,11 @@ fun TodayContent(
             items = habits,
             key = { habit -> habit.id },
         ) { habit ->
-//            val habitProgress =
-//                habitsProgress.firstOrNull { habitProgress ->
-//                    habitProgress.habitId == habit.id
-//                }
-
             HabitCard(
                 onClick = { onHabitClick(habit.id) },
                 name = habit.name,
-//                isDone = it.isDone(habit.target),
-                isDone = false,
-//                progressText = it.getProgressText(habit.target),
-                progressText = null,
+                isDone = habit.isDone,
+                progressText = habit.progressText,
             )
             Spacer(modifier = Modifier.height(6.dp))
         }

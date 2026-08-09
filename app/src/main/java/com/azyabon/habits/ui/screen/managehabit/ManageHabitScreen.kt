@@ -21,6 +21,8 @@ import com.azyabon.habits.core.designsystem.component.AppTextField
 import com.azyabon.habits.core.designsystem.component.AppTopBar
 import com.azyabon.habits.domain.model.HabitCategory
 import com.azyabon.habits.domain.model.HabitUnit
+import com.azyabon.habits.ui.component.DaysSelect
+import java.time.DayOfWeek
 
 @Composable
 fun ManageHabitScreen(
@@ -36,6 +38,8 @@ fun ManageHabitScreen(
         onTargetTypeChange = { viewModel.onTargetTypeChange(it) },
         onAmountChange = { viewModel.onAmountChange(it) },
         onUnitChange = { viewModel.onUnitChange(it) },
+        onScheduleTypeChange = { viewModel.onScheduleTypeChange(it) },
+        onWeekDayToggle = { viewModel.onWeekDayToggle(it) },
         onSubmitClick = { viewModel.onSubmitClick() },
         onBack = onBack,
     )
@@ -50,6 +54,8 @@ fun ManageHabitContent(
     onTargetTypeChange: (HabitTargetType) -> Unit,
     onAmountChange: (String) -> Unit,
     onUnitChange: (HabitUnit) -> Unit,
+    onScheduleTypeChange: (HabitScheduleType) -> Unit,
+    onWeekDayToggle: (DayOfWeek) -> Unit,
     onSubmitClick: () -> Unit,
     onBack: () -> Unit,
 ) {
@@ -70,7 +76,7 @@ fun ManageHabitContent(
             ) {
                 AppTextField(
                     value = uiState.name,
-                    onValueChange = { onNameChange(it) },
+                    onValueChange = onNameChange,
                     label = "Name",
                     placeholder = "Enter habit name",
                     error = uiState.nameError,
@@ -83,7 +89,7 @@ fun ManageHabitContent(
                     placeholder = "Choose category",
                     options = categoryOptions,
                     selectedValue = uiState.category,
-                    onOptionSelected = { onCategoryChange(it) },
+                    onOptionSelected = onCategoryChange,
                     error = uiState.categoryError,
                 )
 
@@ -94,7 +100,7 @@ fun ManageHabitContent(
                     placeholder = "Choose target type",
                     options = targetTypeOptions,
                     selectedValue = uiState.targetType,
-                    onOptionSelected = { onTargetTypeChange(it) },
+                    onOptionSelected = onTargetTypeChange,
                     error = uiState.targetTypeError,
                 )
 
@@ -107,7 +113,7 @@ fun ManageHabitContent(
                     ) {
                         AppTextField(
                             value = uiState.amount,
-                            onValueChange = { onAmountChange(it) },
+                            onValueChange = onAmountChange,
                             label = "Amount",
                             placeholder = "Enter amount",
                             error = uiState.amountError,
@@ -121,11 +127,31 @@ fun ManageHabitContent(
                             placeholder = "Choose unit",
                             options = unitOptions,
                             selectedValue = uiState.unit,
-                            onOptionSelected = { onUnitChange(it) },
+                            onOptionSelected = onUnitChange,
                             error = uiState.unitError,
                             modifier = Modifier.weight(1f),
                         )
                     }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                AppDropdown(
+                    label = "Frequency",
+                    placeholder = "Choose frequency",
+                    options = scheduleTypeOptions,
+                    selectedValue = uiState.scheduleType,
+                    onOptionSelected = { onScheduleTypeChange(it) },
+                )
+
+                if (uiState.scheduleType == HabitScheduleType.SpecificWeekDays) {
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    DaysSelect(
+                        selectedDays = uiState.selectedWeekDays,
+                        onDayClick = onWeekDayToggle,
+                        error = uiState.selectedWeekDaysError,
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

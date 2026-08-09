@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.azyabon.habits.data.repository.HabitRepository
 import com.azyabon.habits.domain.model.Habit
 import com.azyabon.habits.domain.model.HabitCategory
+import com.azyabon.habits.domain.model.HabitSchedule
 import com.azyabon.habits.domain.model.HabitTarget
 import com.azyabon.habits.domain.model.HabitUnit
 import dagger.assisted.Assisted
@@ -14,8 +15,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.util.UUID
 
 @HiltViewModel(assistedFactory = ManageHabitViewModel.Factory::class)
@@ -79,6 +80,31 @@ class ManageHabitViewModel
                 )
         }
 
+        fun onScheduleTypeChange(value: HabitScheduleType) {
+            _uiState.value =
+                _uiState.value.copy(
+                    scheduleType = value,
+                    selectedWeekDaysError = null,
+                )
+        }
+
+        fun onWeekDayToggle(day: DayOfWeek) {
+            val currentDays = _uiState.value.selectedWeekDays
+
+            val newDays =
+                if (day in currentDays) {
+                    currentDays - day
+                } else {
+                    currentDays + day
+                }
+
+            _uiState.value =
+                _uiState.value.copy(
+                    selectedWeekDays = newDays,
+                    selectedWeekDaysError = null,
+                )
+        }
+
         private fun isValid(): Boolean {
             val state = _uiState.value
 
@@ -113,12 +139,23 @@ class ManageHabitViewModel
                     null
                 }
 
+            val selectedWeekDaysError =
+                if (
+                    state.scheduleType == HabitScheduleType.SpecificWeekDays &&
+                    state.selectedWeekDays.isEmpty()
+                ) {
+                    "Choose at least one day"
+                } else {
+                    null
+                }
+
             if (
                 nameError != null ||
                 categoryError != null ||
                 targetTypeError != null ||
                 amountError != null ||
-                unitError != null
+                unitError != null ||
+                selectedWeekDaysError != null
             ) {
                 _uiState.value =
                     state.copy(
@@ -127,6 +164,7 @@ class ManageHabitViewModel
                         targetTypeError = targetTypeError,
                         amountError = amountError,
                         unitError = unitError,
+                        selectedWeekDaysError = selectedWeekDaysError,
                     )
 
                 return false
@@ -159,6 +197,16 @@ class ManageHabitViewModel
                                         value = state.amount.toInt(),
                                         unit = requireNotNull(state.unit),
                                     )
+                                }
+                            },
+                        schedule =
+                            when (state.scheduleType) {
+                                HabitScheduleType.EveryDay -> {
+                                    HabitSchedule.EveryDay
+                                }
+
+                                HabitScheduleType.SpecificWeekDays -> {
+                                    HabitSchedule.SpecificWeekDays(days = state.selectedWeekDays)
                                 }
                             },
                         isActive = true,

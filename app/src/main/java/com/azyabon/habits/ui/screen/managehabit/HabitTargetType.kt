@@ -4,3 +4,8 @@ enum class HabitTargetType {
     CheckOff,
     Amount,
 }
+
+enum class HabitScheduleType {
+    EveryDay,
+    SpecificWeekDays,
+}

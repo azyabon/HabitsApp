@@ -27,3 +27,9 @@ val unitOptions =
         Option(HabitUnit.Minutes, "Minutes"),
         Option(HabitUnit.Times, "Times"),
     )
+
+val scheduleTypeOptions =
+    listOf(
+        Option(HabitScheduleType.EveryDay, "Every day"),
+        Option(HabitScheduleType.SpecificWeekDays, "Specific week days"),
+    )
