@@ -1,6 +1,7 @@
 package com.azyabon.habits.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
@@ -57,9 +58,11 @@ fun AppNavHost() {
                     )
                 }
                 entry<RootDestination.ManageHabit> { destination ->
-                    val viewModel: ManageHabitViewModel =
-                        viewModel(
-                            factory = ManageHabitViewModel.Factory(destination.habitId),
+                    val viewModel =
+                        hiltViewModel<ManageHabitViewModel, ManageHabitViewModel.Factory>(
+                            creationCallback = { factory ->
+                                factory.create(destination.habitId)
+                            },
                         )
 
                     ManageHabitScreen(

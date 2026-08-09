@@ -13,6 +13,7 @@ import com.azyabon.habits.data.local.entity.HabitProgressEntity
         HabitProgressEntity::class,
     ],
     version = 1,
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun habitDao(): HabitDao

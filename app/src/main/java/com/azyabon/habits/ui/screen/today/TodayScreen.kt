@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.azyabon.habits.core.designsystem.icon.Streak
 import com.azyabon.habits.domain.model.Habit
 import com.azyabon.habits.domain.model.HabitProgress
@@ -29,7 +29,7 @@ import com.azyabon.habits.ui.component.HabitCard
 
 @Composable
 fun TodayScreen(
-    viewModel: TodayViewModel = viewModel(),
+    viewModel: TodayViewModel = hiltViewModel(),
     onHabitClick: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -85,20 +85,20 @@ fun TodayContent(
             items = habits,
             key = { habit -> habit.id },
         ) { habit ->
-            val habitProgress =
-                habitsProgress.firstOrNull { habitProgress ->
-                    habitProgress.habitId == habit.id
-                }
+//            val habitProgress =
+//                habitsProgress.firstOrNull { habitProgress ->
+//                    habitProgress.habitId == habit.id
+//                }
 
-            habitProgress?.let {
-                HabitCard(
-                    onClick = { onHabitClick(habit.id) },
-                    name = habit.name,
-                    isDone = it.isDone(habit.target),
-                    progressText = it.getProgressText(habit.target),
-                )
-                Spacer(modifier = Modifier.height(6.dp))
-            }
+            HabitCard(
+                onClick = { onHabitClick(habit.id) },
+                name = habit.name,
+//                isDone = it.isDone(habit.target),
+                isDone = false,
+//                progressText = it.getProgressText(habit.target),
+                progressText = null,
+            )
+            Spacer(modifier = Modifier.height(6.dp))
         }
     }
 }

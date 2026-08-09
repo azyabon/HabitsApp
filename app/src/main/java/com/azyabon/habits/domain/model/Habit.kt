@@ -1,5 +1,7 @@
 package com.azyabon.habits.domain.model
 
+import java.time.DayOfWeek
+
 data class Habit(
     val id: String,
     val name: String,
@@ -14,6 +16,14 @@ enum class HabitCategory {
     Medicine,
     Reading,
     Generic,
+}
+
+sealed interface HabitSchedule {
+    data object EveryDay : HabitSchedule
+
+    data class SpecificWeekDays(
+        val days: Set<DayOfWeek>,
+    ) : HabitSchedule
 }
 
 sealed interface HabitTarget {
