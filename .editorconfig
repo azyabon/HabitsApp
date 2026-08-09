@@ -1,0 +1,5 @@
+root = true
+
+[*.{kt,kts}]
+# Игнорировать правило именования функций для Jetpack Compose
+ktlint_function_naming_ignore_when_annotated_with = Composable
