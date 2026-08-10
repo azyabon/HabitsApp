@@ -25,10 +25,10 @@ class TodayViewModel
         val uiState: StateFlow<TodayUiState> = _uiState.asStateFlow()
 
         init {
-            loadHabits()
+            getHabits()
         }
 
-        private fun loadHabits() {
+        private fun getHabits() {
             val todayDate = LocalDate.now().toString()
             val todayDayOfWeek = LocalDate.now().dayOfWeek
 

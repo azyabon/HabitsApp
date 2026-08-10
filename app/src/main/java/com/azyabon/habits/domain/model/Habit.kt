@@ -13,10 +13,12 @@ data class Habit(
 
 enum class HabitCategory {
     Water,
-    Fitness,
+    Sport,
     Medicine,
-    Reading,
-    Generic,
+    Study,
+    Work,
+    Visit,
+    Custom,
 }
 
 sealed interface HabitSchedule {

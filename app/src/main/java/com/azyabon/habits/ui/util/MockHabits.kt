@@ -23,9 +23,9 @@ val mockHabits: List<Habit> =
             isActive = true,
         ),
         Habit(
-            id = "fitness",
+            id = "sport",
             name = "Do Fitness",
-            category = HabitCategory.Fitness,
+            category = HabitCategory.Sport,
             target =
                 HabitTarget.Amount(
                     value = 30,
@@ -35,9 +35,9 @@ val mockHabits: List<Habit> =
             isActive = true,
         ),
         Habit(
-            id = "reading",
+            id = "study",
             name = "Read book",
-            category = HabitCategory.Reading,
+            category = HabitCategory.Study,
             target = HabitTarget.CheckOff,
             schedule = HabitSchedule.EveryDay,
             isActive = true,
@@ -52,12 +52,12 @@ val mockProgress: List<HabitProgress> =
             currentValue = 2000,
         ),
         HabitProgress(
-            habitId = "fitness",
+            habitId = "sport",
             date = LocalDate.now().toString(),
             currentValue = 21,
         ),
         HabitProgress(
-            habitId = "reading",
+            habitId = "study",
             date = LocalDate.now().toString(),
         ),
     )

@@ -7,10 +7,12 @@ import com.azyabon.habits.domain.model.HabitUnit
 val categoryOptions =
     listOf(
         Option(HabitCategory.Water, "Water"),
-        Option(HabitCategory.Fitness, "Fitness"),
+        Option(HabitCategory.Sport, "Sport"),
         Option(HabitCategory.Medicine, "Medicine"),
-        Option(HabitCategory.Reading, "Reading"),
-        Option(HabitCategory.Generic, "Generic"),
+        Option(HabitCategory.Study, "Study"),
+        Option(HabitCategory.Work, "Work"),
+        Option(HabitCategory.Visit, "Visit"),
+        Option(HabitCategory.Custom, "Custom"),
     )
 
 val targetTypeOptions =
