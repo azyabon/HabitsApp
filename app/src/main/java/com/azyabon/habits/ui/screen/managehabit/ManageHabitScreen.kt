@@ -1,13 +1,11 @@
 package com.azyabon.habits.ui.screen.managehabit
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -16,12 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.azyabon.habits.core.designsystem.component.AppButton
+import com.azyabon.habits.core.designsystem.component.AppChipGroup
 import com.azyabon.habits.core.designsystem.component.AppDropdown
 import com.azyabon.habits.core.designsystem.component.AppTextField
 import com.azyabon.habits.core.designsystem.component.AppTopBar
 import com.azyabon.habits.domain.model.HabitCategory
 import com.azyabon.habits.domain.model.HabitUnit
-import com.azyabon.habits.ui.component.DaysSelect
 import java.time.DayOfWeek
 
 @Composable
@@ -67,100 +65,107 @@ fun ManageHabitContent(
             )
         },
         content = { paddingValues ->
-            Column(
+            LazyColumn(
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .padding(paddingValues)
-                        .padding(horizontal = 16.dp),
+                        .fillMaxSize(),
+                contentPadding = paddingValues,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                AppTextField(
-                    value = uiState.name,
-                    onValueChange = onNameChange,
-                    label = "Name",
-                    placeholder = "Enter habit name",
-                    error = uiState.nameError,
-                )
+                item {
+                    AppTextField(
+                        value = uiState.name,
+                        onValueChange = onNameChange,
+                        label = "Name",
+                        placeholder = "Enter habit name",
+                        error = uiState.nameError,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                item {
+                    AppDropdown(
+                        label = "Category",
+                        placeholder = "Choose category",
+                        options = categoryOptions,
+                        selectedValue = uiState.category,
+                        onOptionSelected = onCategoryChange,
+                        error = uiState.categoryError,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
 
-                AppDropdown(
-                    label = "Category",
-                    placeholder = "Choose category",
-                    options = categoryOptions,
-                    selectedValue = uiState.category,
-                    onOptionSelected = onCategoryChange,
-                    error = uiState.categoryError,
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                AppDropdown(
-                    label = "Target type",
-                    placeholder = "Choose target type",
-                    options = targetTypeOptions,
-                    selectedValue = uiState.targetType,
-                    onOptionSelected = onTargetTypeChange,
-                    error = uiState.targetTypeError,
-                )
+                item {
+                    AppDropdown(
+                        label = "Target type",
+                        placeholder = "Choose target type",
+                        options = targetTypeOptions,
+                        selectedValue = uiState.targetType,
+                        onOptionSelected = onTargetTypeChange,
+                        error = uiState.targetTypeError,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
 
                 if (uiState.targetType == HabitTargetType.Amount) {
-                    Spacer(modifier = Modifier.height(8.dp))
+                    item {
+                        Row(
+                            modifier =
+                                Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            AppTextField(
+                                value = uiState.amount,
+                                onValueChange = onAmountChange,
+                                label = "Amount",
+                                placeholder = "Enter amount",
+                                error = uiState.amountError,
+                                modifier = Modifier.weight(1f),
+                            )
 
-                    Row(
-                        modifier =
-                            Modifier.fillMaxWidth(),
-                    ) {
-                        AppTextField(
-                            value = uiState.amount,
-                            onValueChange = onAmountChange,
-                            label = "Amount",
-                            placeholder = "Enter amount",
-                            error = uiState.amountError,
-                            modifier = Modifier.weight(1f),
-                        )
+                            AppDropdown(
+                                label = "Unit",
+                                placeholder = "Choose unit",
+                                options = unitOptions,
+                                selectedValue = uiState.unit,
+                                onOptionSelected = onUnitChange,
+                                error = uiState.unitError,
+                                modifier = Modifier.weight(1f),
+                            )
+                        }
+                    }
+                }
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                item {
+                    AppDropdown(
+                        label = "Frequency",
+                        placeholder = "Choose frequency",
+                        options = scheduleTypeOptions,
+                        selectedValue = uiState.scheduleType,
+                        onOptionSelected = onScheduleTypeChange,
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                }
 
-                        AppDropdown(
-                            label = "Unit",
-                            placeholder = "Choose unit",
-                            options = unitOptions,
-                            selectedValue = uiState.unit,
-                            onOptionSelected = onUnitChange,
-                            error = uiState.unitError,
-                            modifier = Modifier.weight(1f),
+                if (uiState.scheduleType == HabitScheduleType.SpecificWeekDays) {
+                    item {
+                        AppChipGroup(
+                            label = "Select Days",
+                            options = daysOptions,
+                            selectedValues = uiState.selectedWeekDays,
+                            onOptionClick = onWeekDayToggle,
+                            error = uiState.selectedWeekDaysError,
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                AppDropdown(
-                    label = "Frequency",
-                    placeholder = "Choose frequency",
-                    options = scheduleTypeOptions,
-                    selectedValue = uiState.scheduleType,
-                    onOptionSelected = { onScheduleTypeChange(it) },
-                )
-
-                if (uiState.scheduleType == HabitScheduleType.SpecificWeekDays) {
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    DaysSelect(
-                        selectedDays = uiState.selectedWeekDays,
-                        onDayClick = onWeekDayToggle,
-                        error = uiState.selectedWeekDaysError,
+                item {
+                    AppButton(
+                        text = if (uiState.isEditMode) "Save" else "Create",
+                        onClick = onSubmitClick,
+                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
                     )
                 }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                AppButton(
-                    text = if (uiState.isEditMode) "Save" else "Create",
-                    onClick = onSubmitClick,
-                    modifier = Modifier,
-                )
             }
         },
     )

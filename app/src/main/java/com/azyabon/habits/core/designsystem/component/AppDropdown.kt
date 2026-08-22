@@ -38,11 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 
-data class Option<T>(
-    val value: T,
-    val label: String,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <T> AppDropdown(
@@ -153,7 +148,7 @@ fun <T> AppDropdown(
 
         error?.let {
             Text(
-                text = error,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 fontSize = 14.sp,
             )

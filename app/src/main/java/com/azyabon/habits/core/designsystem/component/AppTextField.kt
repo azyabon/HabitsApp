@@ -80,7 +80,7 @@ fun AppTextField(
 
         error?.let {
             Text(
-                text = error,
+                text = it,
                 color = MaterialTheme.colorScheme.error,
                 fontSize = 14.sp,
             )
