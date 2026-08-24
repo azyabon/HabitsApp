@@ -1,27 +1,16 @@
 package com.azyabon.habits.ui.screen.managehabit
 
 import com.azyabon.habits.core.designsystem.component.Option
-import com.azyabon.habits.domain.model.HabitCategory
+import com.azyabon.habits.domain.model.HabitProgressMode
 import com.azyabon.habits.domain.model.HabitUnit
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
 
-internal val categoryOptions =
+internal val progressModeOptions =
     listOf(
-        Option(HabitCategory.Water, "Water"),
-        Option(HabitCategory.Sport, "Sport"),
-        Option(HabitCategory.Medicine, "Medicine"),
-        Option(HabitCategory.Study, "Study"),
-        Option(HabitCategory.Work, "Work"),
-        Option(HabitCategory.Visit, "Visit"),
-        Option(HabitCategory.Custom, "Custom"),
-    )
-
-internal val targetTypeOptions =
-    listOf(
-        Option(HabitTargetType.CheckOff, "Check off"),
-        Option(HabitTargetType.Amount, "Amount"),
+        Option(HabitProgressMode.Complete, "Mark as Complete"),
+        Option(HabitProgressMode.AddValue, "Add Value"),
     )
 
 internal val unitOptions =
@@ -31,6 +20,8 @@ internal val unitOptions =
         Option(HabitUnit.Hours, "Hours"),
         Option(HabitUnit.Minutes, "Minutes"),
         Option(HabitUnit.Times, "Times"),
+        Option(HabitUnit.Count, "Count"),
+        Option(HabitUnit.Steps, "Steps"),
     )
 
 internal val scheduleTypeOptions =

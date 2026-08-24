@@ -70,7 +70,7 @@ fun HabitContent(
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp),
             ) {
-                Text("HabitContent: ${habit.name} - Progress: ${habitProgress.currentValue}")
+                Text("HabitContent: ${habit.name} - Progress: ${habitProgress.value}")
             }
         },
     )

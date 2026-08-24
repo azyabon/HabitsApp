@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +30,7 @@ fun AppTextField(
     label: String,
     modifier: Modifier = Modifier,
     placeholder: String = "",
+    keyboardOptions: KeyboardOptions = KeyboardOptions(),
     error: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -46,6 +48,7 @@ fun AppTextField(
             modifier = Modifier.fillMaxWidth(),
             textStyle = LocalTextStyle.current.copy(color = colors.focusedTextColor),
             cursorBrush = SolidColor(colors.cursorColor),
+            keyboardOptions = keyboardOptions,
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.DecorationBox(

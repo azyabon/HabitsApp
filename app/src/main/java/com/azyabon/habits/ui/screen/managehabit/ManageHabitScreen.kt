@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.azyabon.habits.core.designsystem.component.AppButton
@@ -18,7 +20,7 @@ import com.azyabon.habits.core.designsystem.component.AppChipGroup
 import com.azyabon.habits.core.designsystem.component.AppDropdown
 import com.azyabon.habits.core.designsystem.component.AppTextField
 import com.azyabon.habits.core.designsystem.component.AppTopBar
-import com.azyabon.habits.domain.model.HabitCategory
+import com.azyabon.habits.domain.model.HabitProgressMode
 import com.azyabon.habits.domain.model.HabitUnit
 import java.time.DayOfWeek
 
@@ -32,10 +34,10 @@ fun ManageHabitScreen(
     ManageHabitContent(
         uiState = uiState,
         onNameChange = { viewModel.onNameChange(it) },
-        onCategoryChange = { viewModel.onCategoryChange(it) },
-        onTargetTypeChange = { viewModel.onTargetTypeChange(it) },
-        onAmountChange = { viewModel.onAmountChange(it) },
+        onGoalChange = { viewModel.onGoalChange(it) },
+        onStepChange = { viewModel.onStepChange(it) },
         onUnitChange = { viewModel.onUnitChange(it) },
+        onProgressModeChange = { viewModel.onProgressModeChange(it) },
         onScheduleTypeChange = { viewModel.onScheduleTypeChange(it) },
         onWeekDayToggle = { viewModel.onWeekDayToggle(it) },
         onSubmitClick = { viewModel.onSubmitClick() },
@@ -48,10 +50,10 @@ fun ManageHabitScreen(
 fun ManageHabitContent(
     uiState: ManageHabitUiState,
     onNameChange: (String) -> Unit,
-    onCategoryChange: (HabitCategory) -> Unit,
-    onTargetTypeChange: (HabitTargetType) -> Unit,
-    onAmountChange: (String) -> Unit,
+    onGoalChange: (String) -> Unit,
+    onStepChange: (String) -> Unit,
     onUnitChange: (HabitUnit) -> Unit,
+    onProgressModeChange: (HabitProgressMode) -> Unit,
     onScheduleTypeChange: (HabitScheduleType) -> Unit,
     onWeekDayToggle: (DayOfWeek) -> Unit,
     onSubmitClick: () -> Unit,
@@ -84,52 +86,61 @@ fun ManageHabitContent(
                 }
 
                 item {
-                    AppDropdown(
-                        label = "Category",
-                        placeholder = "Choose category",
-                        options = categoryOptions,
-                        selectedValue = uiState.category,
-                        onOptionSelected = onCategoryChange,
-                        error = uiState.categoryError,
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    )
+                    Row(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        AppTextField(
+                            value = uiState.goal,
+                            onValueChange = onGoalChange,
+                            label = "Goal",
+                            placeholder = "0",
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    keyboardType = KeyboardType.NumberPassword,
+                                ),
+                            error = uiState.goalError,
+                            modifier = Modifier.weight(1f),
+                        )
+
+                        AppDropdown(
+                            label = "Unit",
+                            placeholder = "Choose unit",
+                            options = unitOptions,
+                            selectedValue = uiState.unit,
+                            onOptionSelected = onUnitChange,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
                 }
 
                 item {
-                    AppDropdown(
-                        label = "Target type",
-                        placeholder = "Choose target type",
-                        options = targetTypeOptions,
-                        selectedValue = uiState.targetType,
-                        onOptionSelected = onTargetTypeChange,
-                        error = uiState.targetTypeError,
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                    )
-                }
+                    Row(
+                        modifier =
+                            Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        AppDropdown(
+                            label = "Progress Mode",
+                            placeholder = "Choose progress mode",
+                            options = progressModeOptions,
+                            selectedValue = uiState.progressMode,
+                            onOptionSelected = onProgressModeChange,
+                            modifier = Modifier.weight(1f),
+                        )
 
-                if (uiState.targetType == HabitTargetType.Amount) {
-                    item {
-                        Row(
-                            modifier =
-                                Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
+                        if (uiState.progressMode === HabitProgressMode.AddValue) {
                             AppTextField(
-                                value = uiState.amount,
-                                onValueChange = onAmountChange,
-                                label = "Amount",
-                                placeholder = "Enter amount",
-                                error = uiState.amountError,
-                                modifier = Modifier.weight(1f),
-                            )
-
-                            AppDropdown(
-                                label = "Unit",
-                                placeholder = "Choose unit",
-                                options = unitOptions,
-                                selectedValue = uiState.unit,
-                                onOptionSelected = onUnitChange,
-                                error = uiState.unitError,
+                                value = uiState.step,
+                                onValueChange = onStepChange,
+                                label = "Step",
+                                placeholder = "0",
+                                keyboardOptions =
+                                    KeyboardOptions(
+                                        keyboardType = KeyboardType.NumberPassword,
+                                    ),
+                                error = uiState.stepError,
                                 modifier = Modifier.weight(1f),
                             )
                         }

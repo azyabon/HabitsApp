@@ -9,5 +9,5 @@ import androidx.room.Entity
 data class HabitProgressEntity(
     val habitId: String,
     val date: String,
-    val currentValue: Int,
+    val value: Int,
 )

@@ -51,14 +51,14 @@ class TodayViewModel
                                     ?: HabitProgress(
                                         habitId = habit.id,
                                         date = todayDate,
-                                        currentValue = 0,
+                                        value = 0,
                                     )
 
                             TodayHabitUi(
                                 id = habit.id,
                                 name = habit.name,
-                                isDone = progress.isDone(habit.target),
-                                progressText = progress.getProgressText(habit.target),
+                                isDone = progress.isDone(habit),
+                                progressText = progress.getProgressText(habit),
                             )
                         }
                 }.collect { todayHabits ->

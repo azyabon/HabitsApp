@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.azyabon.habits.data.repository.HabitRepository
 import com.azyabon.habits.domain.model.Habit
-import com.azyabon.habits.domain.model.HabitCategory
+import com.azyabon.habits.domain.model.HabitProgressMode
 import com.azyabon.habits.domain.model.HabitSchedule
-import com.azyabon.habits.domain.model.HabitTarget
 import com.azyabon.habits.domain.model.HabitUnit
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -31,7 +30,10 @@ class ManageHabitViewModel
             fun create(habitId: String?): ManageHabitViewModel
         }
 
-        private val _uiState = MutableStateFlow(ManageHabitUiState())
+        private val _uiState =
+            MutableStateFlow(
+                ManageHabitUiState(),
+            )
         val uiState: StateFlow<ManageHabitUiState> = _uiState.asStateFlow()
 
         init {
@@ -46,29 +48,30 @@ class ManageHabitViewModel
                 )
         }
 
-        fun onCategoryChange(category: HabitCategory) {
+        fun onGoalChange(value: String) {
+            if (!value.all { it.isDigit() }) return
+
             _uiState.value =
                 _uiState.value.copy(
-                    category = category,
-                    categoryError = null,
+                    goal = value,
+                    goalError = null,
                 )
         }
 
-        fun onTargetTypeChange(value: HabitTargetType) {
+        fun onStepChange(value: String) {
+            if (!value.all { it.isDigit() }) return
+
             _uiState.value =
                 _uiState.value.copy(
-                    targetType = value,
-                    targetTypeError = null,
-                    amountError = null,
-                    unitError = null,
+                    step = value,
+                    stepError = null,
                 )
         }
 
-        fun onAmountChange(value: String) {
+        fun onProgressModeChange(value: HabitProgressMode) {
             _uiState.value =
                 _uiState.value.copy(
-                    amount = value,
-                    amountError = null,
+                    progressMode = value,
                 )
         }
 
@@ -76,7 +79,6 @@ class ManageHabitViewModel
             _uiState.value =
                 _uiState.value.copy(
                     unit = value,
-                    unitError = null,
                 )
         }
 
@@ -109,32 +111,21 @@ class ManageHabitViewModel
             val state = _uiState.value
 
             val name = state.name.trim()
-            val category = state.category
-            val targetType = state.targetType
-            val unit = state.unit
-            val amount = state.amount.trim()
+            val goal = state.goal.trim().toIntOrNull()
+            val step = state.step.trim().toIntOrNull()
 
             val nameError = if (name.isBlank()) "Name is required" else null
-            val categoryError = if (category == null) "Category is required" else null
-            val targetTypeError = if (targetType == null) "Target type is required" else null
 
-            val amountValue =
-                if (targetType == HabitTargetType.Amount) {
-                    amount.toIntOrNull()
+            val stepError =
+                if (state.progressMode == HabitProgressMode.AddValue && (step == null || step <= 0)) {
+                    "Step must be greater than 0"
                 } else {
                     null
                 }
 
-            val amountError =
-                if (targetType == HabitTargetType.Amount && (amountValue == null || amountValue <= 0)) {
-                    "Amount must be greater than 0"
-                } else {
-                    null
-                }
-
-            val unitError =
-                if (targetType == HabitTargetType.Amount && unit == null) {
-                    "Unit is required"
+            val goalError =
+                if (goal == null || goal <= 0) {
+                    "Goal must be greater than 0"
                 } else {
                     null
                 }
@@ -151,19 +142,15 @@ class ManageHabitViewModel
 
             if (
                 nameError != null ||
-                categoryError != null ||
-                targetTypeError != null ||
-                amountError != null ||
-                unitError != null ||
+                goalError != null ||
+                stepError != null ||
                 selectedWeekDaysError != null
             ) {
                 _uiState.value =
                     state.copy(
+                        stepError = stepError,
                         nameError = nameError,
-                        categoryError = categoryError,
-                        targetTypeError = targetTypeError,
-                        amountError = amountError,
-                        unitError = unitError,
+                        goalError = goalError,
                         selectedWeekDaysError = selectedWeekDaysError,
                     )
 
@@ -177,28 +164,17 @@ class ManageHabitViewModel
             if (!isValid()) return
 
             val state = _uiState.value
-            val category = requireNotNull(state.category)
-            val targetType = requireNotNull(state.targetType)
+            val progressMode = requireNotNull(state.progressMode)
 
             viewModelScope.launch {
                 val habit =
                     Habit(
                         id = habitId ?: UUID.randomUUID().toString(),
                         name = state.name,
-                        category = category,
-                        target =
-                            when (targetType) {
-                                HabitTargetType.CheckOff -> {
-                                    HabitTarget.CheckOff
-                                }
-
-                                HabitTargetType.Amount -> {
-                                    HabitTarget.Amount(
-                                        value = state.amount.toInt(),
-                                        unit = requireNotNull(state.unit),
-                                    )
-                                }
-                            },
+                        goal = state.goal.toInt(),
+                        progressMode = progressMode,
+                        unit = state.unit,
+                        step = state.step.toIntOrNull() ?: 1,
                         schedule =
                             when (state.scheduleType) {
                                 HabitScheduleType.EveryDay -> {

@@ -3,15 +3,14 @@ package com.azyabon.habits.data.local.mapper
 import com.azyabon.habits.data.local.entity.HabitEntity
 import com.azyabon.habits.data.local.entity.HabitProgressEntity
 import com.azyabon.habits.domain.model.Habit
-import com.azyabon.habits.domain.model.HabitCategory
 import com.azyabon.habits.domain.model.HabitProgress
+import com.azyabon.habits.domain.model.HabitProgressMode
 import com.azyabon.habits.domain.model.HabitSchedule
-import com.azyabon.habits.domain.model.HabitTarget
 import com.azyabon.habits.domain.model.HabitUnit
 import java.time.DayOfWeek
 
-private const val TARGET_TYPE_CHECK_OFF = "CHECK_OFF"
-private const val TARGET_TYPE_AMOUNT = "AMOUNT"
+private const val PROGRESS_MODE_COMPLETE = "COMPLETE"
+private const val PROGRESS_MODE_ADD_VALUE = "ADD_VALUE"
 
 private const val SCHEDULE_TYPE_EVERY_DAY = "EVERY_DAY"
 private const val SCHEDULE_TYPE_SPECIFIC_WEEK_DAYS = "SPECIFIC_WEEK_DAYS"
@@ -20,14 +19,14 @@ fun Habit.toEntity() =
     HabitEntity(
         id = id,
         name = name,
-        category = category.name,
-        targetType =
-            when (target) {
-                HabitTarget.CheckOff -> TARGET_TYPE_CHECK_OFF
-                is HabitTarget.Amount -> TARGET_TYPE_AMOUNT
+        goal = goal,
+        unit = unit.name,
+        progressMode =
+            when (progressMode) {
+                HabitProgressMode.Complete -> PROGRESS_MODE_COMPLETE
+                HabitProgressMode.AddValue -> PROGRESS_MODE_ADD_VALUE
             },
-        targetAmount = (target as? HabitTarget.Amount)?.value,
-        targetUnit = (target as? HabitTarget.Amount)?.unit?.name,
+        step = step,
         scheduleType =
             when (schedule) {
                 HabitSchedule.EveryDay -> SCHEDULE_TYPE_EVERY_DAY
@@ -50,24 +49,23 @@ fun HabitEntity.toDomain() =
     Habit(
         id = id,
         name = name,
-        category = HabitCategory.valueOf(category),
-        target =
-            when (targetType) {
-                TARGET_TYPE_CHECK_OFF -> {
-                    HabitTarget.CheckOff
+        goal = goal,
+        unit = HabitUnit.valueOf(unit),
+        progressMode =
+            when (progressMode) {
+                PROGRESS_MODE_COMPLETE -> {
+                    HabitProgressMode.Complete
                 }
 
-                TARGET_TYPE_AMOUNT -> {
-                    HabitTarget.Amount(
-                        value = requireNotNull(targetAmount),
-                        unit = HabitUnit.valueOf(requireNotNull(targetUnit)),
-                    )
+                PROGRESS_MODE_ADD_VALUE -> {
+                    HabitProgressMode.AddValue
                 }
 
                 else -> {
-                    throw IllegalArgumentException("Unknown target type: $targetType")
+                    throw IllegalArgumentException("Unknown target type: $progressMode")
                 }
             },
+        step = step,
         schedule =
             when (scheduleType) {
                 SCHEDULE_TYPE_EVERY_DAY -> {
@@ -95,12 +93,12 @@ fun HabitProgress.toEntity() =
     HabitProgressEntity(
         habitId = habitId,
         date = date,
-        currentValue = currentValue,
+        value = value,
     )
 
 fun HabitProgressEntity.toDomain() =
     HabitProgress(
         habitId = habitId,
         date = date,
-        currentValue = currentValue,
+        value = value,
     )
