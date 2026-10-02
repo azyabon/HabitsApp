@@ -34,6 +34,7 @@ fun HabitCard(
     progressText: String?,
     name: String,
     onClick: () -> Unit,
+    onProgressClick: () -> Unit,
 ) {
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -84,7 +85,7 @@ fun HabitCard(
                         .background(MaterialTheme.colorScheme.primaryContainer)
                         .clickable(
                             enabled = !isDone,
-                            onClick = {},
+                            onClick = onProgressClick,
                         ),
             ) {
                 Icon(

@@ -30,6 +30,8 @@ fun AppTextField(
     label: String,
     modifier: Modifier = Modifier,
     placeholder: String = "",
+    minLines: Int = 1,
+    maxLines: Int = 1,
     keyboardOptions: KeyboardOptions = KeyboardOptions(),
     error: String? = null,
 ) {
@@ -49,13 +51,15 @@ fun AppTextField(
             textStyle = LocalTextStyle.current.copy(color = colors.focusedTextColor),
             cursorBrush = SolidColor(colors.cursorColor),
             keyboardOptions = keyboardOptions,
+            minLines = minLines,
+            maxLines = maxLines,
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
                 TextFieldDefaults.DecorationBox(
                     value = value,
                     innerTextField = innerTextField,
                     enabled = true,
-                    singleLine = true,
+                    singleLine = maxLines == 1 && minLines == 1,
                     visualTransformation = VisualTransformation.None,
                     interactionSource = interactionSource,
                     placeholder = { Text(placeholder) },

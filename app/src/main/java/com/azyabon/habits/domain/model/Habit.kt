@@ -1,15 +1,20 @@
 package com.azyabon.habits.domain.model
 
 import java.time.DayOfWeek
+import java.time.LocalDate
 
 data class Habit(
     val id: String,
     val name: String,
+    val description: String,
+    val color: Long,
     val goal: Int,
     val unit: HabitUnit,
     val progressMode: HabitProgressMode,
     val step: Int,
     val schedule: HabitSchedule,
+    val startDate: String,
+    val endDate: String?,
     val isActive: Boolean,
 )
 
@@ -51,3 +56,10 @@ fun HabitSchedule.isDueOn(day: DayOfWeek): Boolean =
         HabitSchedule.EveryDay -> true
         is HabitSchedule.SpecificWeekDays -> day in days
     }
+
+fun Habit.isActiveOn(date: LocalDate): Boolean {
+    val start = LocalDate.parse(startDate)
+    val end = endDate?.let(LocalDate::parse)
+
+    return !date.isBefore(start) && (end == null || !date.isAfter(end))
+}

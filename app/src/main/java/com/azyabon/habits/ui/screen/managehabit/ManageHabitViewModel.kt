@@ -48,6 +48,13 @@ class ManageHabitViewModel
                 )
         }
 
+        fun onDescriptionChange(description: String) {
+            _uiState.value =
+                _uiState.value.copy(
+                    description = description,
+                )
+        }
+
         fun onGoalChange(value: String) {
             if (!value.all { it.isDigit() }) return
 
@@ -107,6 +114,14 @@ class ManageHabitViewModel
                 )
         }
 
+        fun onStartDateChange(startDate: String) {
+            _uiState.value = _uiState.value.copy(startDate = startDate)
+        }
+
+        fun onEndDateChange(endDate: String?) {
+            _uiState.value = _uiState.value.copy(endDate = endDate)
+        }
+
         private fun isValid(): Boolean {
             val state = _uiState.value
 
@@ -164,13 +179,15 @@ class ManageHabitViewModel
             if (!isValid()) return
 
             val state = _uiState.value
-            val progressMode = requireNotNull(state.progressMode)
+            val progressMode = state.progressMode
 
             viewModelScope.launch {
                 val habit =
                     Habit(
                         id = habitId ?: UUID.randomUUID().toString(),
                         name = state.name,
+                        description = state.description,
+                        color = state.color,
                         goal = state.goal.toInt(),
                         progressMode = progressMode,
                         unit = state.unit,
@@ -185,6 +202,8 @@ class ManageHabitViewModel
                                     HabitSchedule.SpecificWeekDays(days = state.selectedWeekDays)
                                 }
                             },
+                        startDate = state.startDate,
+                        endDate = state.endDate,
                         isActive = true,
                     )
 

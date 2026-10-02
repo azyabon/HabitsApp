@@ -35,6 +35,7 @@ fun TodayScreen(
     TodayContent(
         habits = uiState.habits,
         onHabitClick = onHabitClick,
+        onProgressClick = viewModel::onProgressClick,
     )
 }
 
@@ -42,6 +43,7 @@ fun TodayScreen(
 fun TodayContent(
     habits: List<TodayHabitUi>,
     onHabitClick: (String) -> Unit,
+    onProgressClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier =
@@ -83,6 +85,7 @@ fun TodayContent(
         ) { habit ->
             HabitCard(
                 onClick = { onHabitClick(habit.id) },
+                onProgressClick = { onProgressClick(habit.id) },
                 name = habit.name,
                 isDone = habit.isDone,
                 progressText = habit.progressText,

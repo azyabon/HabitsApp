@@ -6,6 +6,7 @@ import com.azyabon.habits.data.local.mapper.toDomain
 import com.azyabon.habits.data.local.mapper.toEntity
 import com.azyabon.habits.domain.model.Habit
 import com.azyabon.habits.domain.model.HabitProgress
+import com.azyabon.habits.domain.model.HabitProgressMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -36,5 +37,29 @@ class HabitRepository(
 
     suspend fun saveProgress(progress: HabitProgress) {
         progressDao.upsertProgress(progress.toEntity())
+    }
+
+    suspend fun updateProgress(
+        habitId: String,
+        date: String,
+    ) {
+        val habit = habitDao.getHabitById(habitId)?.toDomain() ?: return
+        val progress = progressDao.getProgressForHabitByDate(habitId, date)?.toDomain()
+
+        val currentValue = progress?.value ?: 0
+
+        val newValue =
+            when (habit.progressMode) {
+                HabitProgressMode.Complete -> habit.goal
+                HabitProgressMode.AddValue -> (currentValue + habit.step).coerceAtMost(habit.goal)
+            }
+
+        saveProgress(
+            HabitProgress(
+                habitId = habitId,
+                date = date,
+                value = newValue,
+            ),
+        )
     }
 }

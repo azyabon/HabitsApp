@@ -2,8 +2,6 @@ package com.azyabon.habits.ui.screen.habit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.azyabon.habits.ui.util.mockHabits
-import com.azyabon.habits.ui.util.mockProgress
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,10 +25,7 @@ class HabitViewModel(
 
     private fun loadMockHabit(habitId: String) {
         _uiState.update { currentState ->
-            currentState.copy(
-                habit = mockHabits.firstOrNull { habit -> habit.id == habitId },
-                habitProgress = mockProgress.firstOrNull { habitProgress -> habitProgress.habitId == habitId },
-            )
+            currentState.copy()
         }
     }
 }

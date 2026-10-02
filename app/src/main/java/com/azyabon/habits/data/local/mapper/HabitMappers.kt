@@ -19,6 +19,8 @@ fun Habit.toEntity() =
     HabitEntity(
         id = id,
         name = name,
+        description = description,
+        color = color,
         goal = goal,
         unit = unit.name,
         progressMode =
@@ -42,6 +44,8 @@ fun Habit.toEntity() =
                     schedule.days.joinToString(",") { day -> day.name }
                 }
             },
+        startDate = startDate,
+        endDate = endDate,
         isActive = isActive,
     )
 
@@ -49,6 +53,8 @@ fun HabitEntity.toDomain() =
     Habit(
         id = id,
         name = name,
+        description = description,
+        color = color,
         goal = goal,
         unit = HabitUnit.valueOf(unit),
         progressMode =
@@ -86,6 +92,8 @@ fun HabitEntity.toDomain() =
                     throw IllegalArgumentException("Unknown schedule type: $scheduleType")
                 }
             },
+        startDate = startDate,
+        endDate = endDate,
         isActive = isActive,
     )
 
