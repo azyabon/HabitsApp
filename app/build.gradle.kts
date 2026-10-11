@@ -44,6 +44,8 @@ android {
 
 dependencies {
 
+    implementation(libs.kizitonwose.calendar.compose)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)

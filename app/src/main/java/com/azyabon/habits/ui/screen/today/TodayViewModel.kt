@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -27,8 +29,6 @@ class TodayViewModel
         private val _uiState = MutableStateFlow(TodayUiState())
         val uiState: StateFlow<TodayUiState> = _uiState.asStateFlow()
 
-        private val currentDate = MutableStateFlow(LocalDate.now())
-
         init {
             getHabits()
         }
@@ -36,7 +36,9 @@ class TodayViewModel
         @OptIn(ExperimentalCoroutinesApi::class)
         private fun getHabits() {
             viewModelScope.launch {
-                currentDate
+                _uiState
+                    .map { it.currentDate }
+                    .distinctUntilChanged()
                     .flatMapLatest { date ->
                         combine(
                             habitRepository.observeActiveHabits(),
@@ -75,11 +77,15 @@ class TodayViewModel
             }
         }
 
+        fun onDateSelected(date: LocalDate) {
+            _uiState.update { it.copy(currentDate = date) }
+        }
+
         fun onProgressClick(habitId: String) {
             viewModelScope.launch {
                 habitRepository.updateProgress(
                     habitId = habitId,
-                    date = currentDate.value.toString(),
+                    date = _uiState.value.currentDate.toString(),
                 )
             }
         }
