@@ -36,9 +36,9 @@ fun TodayScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val currentMonth = remember { YearMonth.now() }
-    val startDate = remember { currentMonth.minusMonths(100).atStartOfMonth() }
-    val endDate = remember { currentMonth.plusMonths(100).atEndOfMonth() }
+    val calendarAnchorMonth = remember { YearMonth.now() }
+    val startDate = remember { calendarAnchorMonth.minusMonths(100).atStartOfMonth() }
+    val endDate = remember { calendarAnchorMonth.plusMonths(100).atEndOfMonth() }
     val firstDayOfWeek = remember { firstDayOfWeekFromLocale() }
 
     val state =
@@ -77,7 +77,7 @@ fun TodayContent(
             Text(
                 text = currentDate.toHeaderText(),
                 textAlign = TextAlign.Center,
-                fontSize = 18.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
             )
